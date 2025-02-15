@@ -1,23 +1,4 @@
 services:
-  ultrafeeder:
-    environment:
-      - TZ=${TZ}
-      - READSB_LAT=${LAT}
-      - READSB_LON=${LONG}
-      - 'TAR1090_CONFIGJS_APPEND=droneJson="./data/drone.json";'
-    container_name: ultrafeeder
-    hostname: tar1090
-    image: ghcr.io/sdr-enthusiasts/docker-adsb-ultrafeeder
-    ports:
-      - 8078:80
-    tmpfs:
-      - /run:exec,size=64M
-    volumes:
-      - /opt/adsb/ultrafeeder/globe_history:/var/globe_history
-      - /opt/adsb/ultrafeeder/graphs1090:/var/lib/collectd
-      - /proc/diskstats:/proc/diskstats:ro
-      - /run/readsb:/run/readsb
-  
   sniffle:
     environment:
       - ${USB_DEVICE}:${USB_DEVICE}
@@ -49,6 +30,4 @@ services:
       context: ./zmqToTar1090
       dockerfile: Dockerfile
     image: zmqtotar1090:latest
-    entrypoint: ["python3", "/src/zmqToTar1090/zmqToTar1090.py", "--zmqsetting", "zmqDecoder:4224", "--zmqsbs", "--sbssetting", "tar1090:32006", "--zmqjson", "-v"]
-    volumes:
-      - /run/readsb:/run/readsb
+    entrypoint: ["python3", "/src/zmqToTar1090/zmqToTar1090.py", "--zmqsetting", "zmqDecoder:4224", "--zmqsbs", "--sbssetting", "feed-01.ridxchange.com:32006", "-v"]
